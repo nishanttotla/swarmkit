@@ -68,6 +68,7 @@ message ServiceSpec {
 	oneof mode {
 		ReplicatedService replicated = 3;
 		GlobalService global = 4;
+		HookService hook = 5;
 	}
 
 	// Update contains settings which affect updates.
@@ -96,6 +97,11 @@ message ReplicatedService {
 // GlobalService represents global service.
 message GlobalService {
 	// Empty message for now.
+}
+
+// HookService represents services that don't actually run.
+message HookService {
+	// Empty for now.
 }
 
 message TaskSpec {

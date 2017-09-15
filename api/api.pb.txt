@@ -263,6 +263,14 @@ file {
         type: TYPE_INT32
         json_name: "end"
       }
+      field {
+        name: "options"
+        number: 3
+        label: LABEL_OPTIONAL
+        type: TYPE_MESSAGE
+        type_name: ".google.protobuf.ExtensionRangeOptions"
+        json_name: "options"
+      }
     }
     nested_type {
       name: "ReservedRange"
@@ -280,6 +288,21 @@ file {
         type: TYPE_INT32
         json_name: "end"
       }
+    }
+  }
+  message_type {
+    name: "ExtensionRangeOptions"
+    field {
+      name: "uninterpreted_option"
+      number: 999
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".google.protobuf.UninterpretedOption"
+      json_name: "uninterpretedOption"
+    }
+    extension_range {
+      start: 1000
+      end: 536870912
     }
   }
   message_type {
@@ -674,6 +697,14 @@ file {
       json_name: "pyGenericServices"
     }
     field {
+      name: "php_generic_services"
+      number: 19
+      label: LABEL_OPTIONAL
+      type: TYPE_BOOL
+      default_value: "false"
+      json_name: "phpGenericServices"
+    }
+    field {
       name: "deprecated"
       number: 23
       label: LABEL_OPTIONAL
@@ -716,6 +747,13 @@ file {
       label: LABEL_OPTIONAL
       type: TYPE_STRING
       json_name: "phpClassPrefix"
+    }
+    field {
+      name: "php_namespace"
+      number: 41
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      json_name: "phpNamespace"
     }
     field {
       name: "uninterpreted_option"
@@ -4268,6 +4306,15 @@ file {
       json_name: "global"
     }
     field {
+      name: "hook"
+      number: 5
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".docker.swarmkit.v1.HookService"
+      oneof_index: 0
+      json_name: "hook"
+    }
+    field {
       name: "update"
       number: 6
       label: LABEL_OPTIONAL
@@ -4318,6 +4365,9 @@ file {
   }
   message_type {
     name: "GlobalService"
+  }
+  message_type {
+    name: "HookService"
   }
   message_type {
     name: "TaskSpec"
@@ -4630,6 +4680,14 @@ file {
       type_name: ".docker.swarmkit.v1.HealthConfig"
       json_name: "healthcheck"
     }
+    field {
+      name: "init_value"
+      number: 23
+      label: LABEL_OPTIONAL
+      type: TYPE_BOOL
+      oneof_index: 0
+      json_name: "initValue"
+    }
     nested_type {
       name: "LabelsEntry"
       field {
@@ -4683,6 +4741,9 @@ file {
         type: TYPE_STRING
         json_name: "options"
       }
+    }
+    oneof_decl {
+      name: "init"
     }
   }
   message_type {
@@ -5392,6 +5453,9 @@ file {
       label: LABEL_OPTIONAL
       type: TYPE_MESSAGE
       type_name: ".docker.swarmkit.v1.NetworkAttachment"
+      options {
+        deprecated: true
+      }
       json_name: "attachment"
     }
     field {
@@ -5412,6 +5476,14 @@ file {
       type: TYPE_ENUM
       type_name: ".docker.swarmkit.v1.NodeRole"
       json_name: "role"
+    }
+    field {
+      name: "lb_attachments"
+      number: 10
+      label: LABEL_REPEATED
+      type: TYPE_MESSAGE
+      type_name: ".docker.swarmkit.v1.NetworkAttachment"
+      json_name: "lbAttachments"
     }
     options {
       70001 {
