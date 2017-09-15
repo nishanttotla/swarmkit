@@ -62,6 +62,6 @@ var (
 func init() {
 	flags := createCmd.Flags()
 	flagparser.AddServiceFlags(flags)
-	flags.String("mode", "replicated", "one of replicated, global")
+	flags.String("mode", "replicated", "one of replicated, global, hook")
 	flags.StringSlice("secret", nil, "add a secret from swarm")
 }

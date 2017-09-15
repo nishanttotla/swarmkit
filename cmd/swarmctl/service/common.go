@@ -39,6 +39,8 @@ func getService(ctx context.Context, c api.ControlClient, input string) (*api.Se
 
 func getServiceReplicasTxt(s *api.Service, running int) string {
 	switch t := s.Spec.GetMode().(type) {
+	case *api.ServiceSpec_Hook:
+		return "hook"
 	case *api.ServiceSpec_Global:
 		return "global"
 	case *api.ServiceSpec_Replicated:

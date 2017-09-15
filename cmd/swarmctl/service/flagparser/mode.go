@@ -15,6 +15,12 @@ func parseMode(flags *pflag.FlagSet, spec *api.ServiceSpec) error {
 		}
 
 		switch mode {
+		case "hook":
+			if spec.GetHook() == nil {
+				spec.Mode = &api.ServiceSpec_Hook{
+					Hook: &api.HookService{},
+				}
+			}
 		case "global":
 			if spec.GetGlobal() == nil {
 				spec.Mode = &api.ServiceSpec_Global{
