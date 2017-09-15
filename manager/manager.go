@@ -33,6 +33,7 @@ import (
 	"github.com/docker/swarmkit/manager/metrics"
 	"github.com/docker/swarmkit/manager/orchestrator/constraintenforcer"
 	"github.com/docker/swarmkit/manager/orchestrator/global"
+	"github.com/docker/swarmkit/manager/orchestrator/hook"
 	"github.com/docker/swarmkit/manager/orchestrator/replicated"
 	"github.com/docker/swarmkit/manager/orchestrator/taskreaper"
 	"github.com/docker/swarmkit/manager/resourceapi"
@@ -138,6 +139,7 @@ type Manager struct {
 	watchServer            *watchapi.Server
 	replicatedOrchestrator *replicated.Orchestrator
 	globalOrchestrator     *global.Orchestrator
+	hookOrchestrator       *hook.Orchestrator
 	taskReaper             *taskreaper.TaskReaper
 	constraintEnforcer     *constraintenforcer.ConstraintEnforcer
 	scheduler              *scheduler.Scheduler
@@ -633,6 +635,9 @@ func (m *Manager) Stop(ctx context.Context, clearData bool) {
 	if m.globalOrchestrator != nil {
 		m.globalOrchestrator.Stop()
 	}
+	if m.hookOrchestrator != nil {
+		m.hookOrchestrator.Stop()
+	}
 	if m.taskReaper != nil {
 		m.taskReaper.Stop()
 	}
@@ -994,6 +999,7 @@ func (m *Manager) becomeLeader(ctx context.Context) {
 	m.replicatedOrchestrator = replicated.NewReplicatedOrchestrator(s)
 	m.constraintEnforcer = constraintenforcer.New(s)
 	m.globalOrchestrator = global.NewGlobalOrchestrator(s)
+	m.hookOrchestrator = hook.NewHookOrchestrator(s)
 	m.taskReaper = taskreaper.New(s)
 	m.scheduler = scheduler.New(s)
 	m.keyManager = keymanager.New(s, keymanager.DefaultConfig())
@@ -1071,6 +1077,12 @@ func (m *Manager) becomeLeader(ctx context.Context) {
 		}
 	}(m.globalOrchestrator)
 
+	go func(hookOrchestrator *hook.Orchestrator) {
+		if err := hookOrchestrator.Run(ctx); err != nil {
+			log.G(ctx).WithError(err).Error("hook orchestrator exited with an error")
+		}
+	}(m.hookOrchestrator)
+
 	go func(roleManager *roleManager) {
 		roleManager.Run(ctx)
 	}(m.roleManager)
@@ -1095,6 +1107,9 @@ func (m *Manager) becomeFollower() {
 
 	m.globalOrchestrator.Stop()
 	m.globalOrchestrator = nil
+
+	m.hookOrchestrator.Stop()
+	m.hookOrchestrator = nil
 
 	m.taskReaper.Stop()
 	m.taskReaper = nil
