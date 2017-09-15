@@ -458,6 +458,7 @@ func validateMode(s *api.ServiceSpec) error {
 			return grpc.Errorf(codes.InvalidArgument, "Number of replicas must be non-negative")
 		}
 	case *api.ServiceSpec_Global:
+	case *api.ServiceSpec_Hook:
 	default:
 		return grpc.Errorf(codes.InvalidArgument, "Unrecognized service mode")
 	}
