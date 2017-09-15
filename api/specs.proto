@@ -69,6 +69,7 @@ message ServiceSpec {
 		ReplicatedService replicated = 3;
 		GlobalService global = 4;
 		HookService hook = 5;
+		StatefulService stateful = 10;
 	}
 
 	// Update contains settings which affect updates.
@@ -102,6 +103,14 @@ message GlobalService {
 // HookService represents services that don't actually run.
 message HookService {
 	// Empty for now.
+}
+
+// StatefulService represents stateful services.
+message StatefulService {
+	uint64 replicas = 1;
+	string init_hook_id = 2 [(gogoproto.customname) = "InitHookID"];
+	string pre_scale_hook_id = 3 [(gogoproto.customname) = "PreScaleHookID"];
+	string post_scale_hook_id = 4 [(gogoproto.customname) = "PostScaleHookID"];
 }
 
 message TaskSpec {

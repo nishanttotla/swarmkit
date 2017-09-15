@@ -147,6 +147,7 @@
 		ReplicatedService
 		GlobalService
 		HookService
+		StatefulService
 		TaskSpec
 		ResourceReference
 		GenericRuntimeSpec

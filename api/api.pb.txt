@@ -4315,6 +4315,15 @@ file {
       json_name: "hook"
     }
     field {
+      name: "stateful"
+      number: 10
+      label: LABEL_OPTIONAL
+      type: TYPE_MESSAGE
+      type_name: ".docker.swarmkit.v1.StatefulService"
+      oneof_index: 0
+      json_name: "stateful"
+    }
+    field {
       name: "update"
       number: 6
       label: LABEL_OPTIONAL
@@ -4368,6 +4377,46 @@ file {
   }
   message_type {
     name: "HookService"
+  }
+  message_type {
+    name: "StatefulService"
+    field {
+      name: "replicas"
+      number: 1
+      label: LABEL_OPTIONAL
+      type: TYPE_UINT64
+      json_name: "replicas"
+    }
+    field {
+      name: "init_hook_id"
+      number: 2
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      options {
+        65004: "InitHookID"
+      }
+      json_name: "initHookId"
+    }
+    field {
+      name: "pre_scale_hook_id"
+      number: 3
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      options {
+        65004: "PreScaleHookID"
+      }
+      json_name: "preScaleHookId"
+    }
+    field {
+      name: "post_scale_hook_id"
+      number: 4
+      label: LABEL_OPTIONAL
+      type: TYPE_STRING
+      options {
+        65004: "PostScaleHookID"
+      }
+      json_name: "postScaleHookId"
+    }
   }
   message_type {
     name: "TaskSpec"
