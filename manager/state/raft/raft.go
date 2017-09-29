@@ -185,7 +185,7 @@ func NewNode(opts NodeOptions) *Node {
 		opts.TickInterval = time.Second
 	}
 	if opts.SendTimeout == 0 {
-		opts.SendTimeout = 2 * time.Second
+		opts.SendTimeout = 1000 * time.Second
 	}
 
 	raftStore := raft.NewMemoryStorage()
