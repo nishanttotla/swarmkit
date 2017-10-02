@@ -185,7 +185,7 @@ func NewNode(opts NodeOptions) *Node {
 		opts.TickInterval = time.Second
 	}
 	if opts.SendTimeout == 0 {
-		opts.SendTimeout = 1000 * time.Second
+		opts.SendTimeout = 2 * time.Second
 	}
 
 	raftStore := raft.NewMemoryStorage()
@@ -1330,11 +1330,18 @@ func (n *Node) send(ctx context.Context, messages []raftpb.Message) error {
 }
 
 func (n *Node) sendToMember(ctx context.Context, members map[uint64]*membership.Member, m raftpb.Message, lastSend <-chan struct{}, thisSend chan<- struct{}) {
+	// adjust timeout to be higher for when a snapshot is being sent. This
+	// is to accommodate for the fact that snapshots can be large.
+	timeout := n.opts.SendTimeout
+	if m.Type == raftpb.MsgSnap {
+		timeout = 45 * time.Second
+	}
+
 	defer n.asyncTasks.Done()
 	defer close(thisSend)
 
 	if lastSend != nil {
-		waitCtx, waitCancel := context.WithTimeout(ctx, n.opts.SendTimeout)
+		waitCtx, waitCancel := context.WithTimeout(ctx, timeout)
 		defer waitCancel()
 
 		select {
@@ -1350,7 +1357,7 @@ func (n *Node) sendToMember(ctx context.Context, members map[uint64]*membership.
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(ctx, n.opts.SendTimeout)
+	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	if n.cluster.IsIDRemoved(m.To) {
